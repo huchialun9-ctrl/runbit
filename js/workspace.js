@@ -86,15 +86,17 @@
   }
 
   function getFileIcon(name) {
+    if (typeof RBIcons === 'undefined') return '';
     const ext = name.split('.').pop().toLowerCase();
-    const icons = {
-      html: '&#127760;', htm: '&#127760;', css: '&#127912;',
-      js: '&#9889;', mjs: '&#9889;', json: '&#123;&#125;',
-      svg: '&#127912;', png: '&#128247;', jpg: '&#128247;',
-      jpeg: '&#128247;', gif: '&#128247;', webp: '&#128247;',
-      md: '&#128221;', txt: '&#128196;', py: '&#128013;', ts: '&#128309;',
+    const iconMap = {
+      html: 'fileTypeHtml', htm: 'fileTypeHtml', css: 'fileTypeCss',
+      js: 'fileTypeJs', mjs: 'fileTypeJs', json: 'fileTypeJson',
+      svg: 'fileTypeSvg', png: 'fileTypeImg', jpg: 'fileTypeImg',
+      jpeg: 'fileTypeImg', gif: 'fileTypeImg', webp: 'fileTypeImg',
+      md: 'fileTypeMd', txt: 'fileTypeTxt', py: 'fileTypePy',
+      ts: 'fileTypeJs', jsx: 'fileTypeJs', tsx: 'fileTypeJs',
     };
-    return icons[ext] || '&#128196;';
+    return RBIcons.icon(iconMap[ext] || 'fileTypeDefault', 14);
   }
 
   // ── State ──
@@ -560,7 +562,9 @@
       item.style.paddingLeft = (8 + depth * 14) + 'px';
 
       if (entry.type === 'dir') {
-        item.innerHTML = `<span class="icon arrow">&#9654;</span><span class="icon">&#128193;</span><span class="name">${entry.name}</span>`;
+        const arrowSvg = RBIcons.icon('chevronRight', 10);
+        const folderSvg = RBIcons.icon('folder', 14);
+        item.innerHTML = `<span class="icon arrow">${arrowSvg}</span><span class="icon">${folderSvg}</span><span class="name">${entry.name}</span>`;
         const children = document.createElement('div');
         children.className = 'tree-children';
         children.style.display = 'none';
@@ -894,8 +898,14 @@
     const container = document.getElementById('console-view-console');
     const el = document.createElement('div');
     el.className = `console-entry ${level}`;
-    const icons = { log: '&#8250;', error: '&#10005;', warn: '&#9888;', info: '&#8505;', debug: 'DBG' };
-    el.innerHTML = `<span class="console-entry-icon">${icons[level] || '&#8250;'}</span><span class="console-entry-content">${escapeHtml(entry.args.join(' '))}</span><span class="console-entry-time">${entry.time}</span>`;
+    const icons = {
+      log: RBIcons.icon('consoleLog', 12),
+      error: RBIcons.icon('consoleError', 12),
+      warn: RBIcons.icon('consoleWarn', 12),
+      info: RBIcons.icon('consoleInfo', 12),
+      debug: RBIcons.icon('terminal', 12),
+    };
+    el.innerHTML = `<span class="console-entry-icon">${icons[level] || RBIcons.icon('consoleLog', 12)}</span><span class="console-entry-content">${escapeHtml(entry.args.join(' '))}</span><span class="console-entry-time">${entry.time}</span>`;
     container.appendChild(el);
     container.scrollTop = container.scrollHeight;
     document.getElementById('console-count').textContent = state.consoleEntries.length;
