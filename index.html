@@ -19,7 +19,7 @@
         <span>Runbits Web</span>
       </div>
       <div class="header-actions">
-        <button class="header-link" id="btn-github">&#128187; GitHub</button>
+        <button class="header-link" id="btn-github"><span class="icon-inline" data-icon="github"></span> GitHub</button>
         <button class="btn btn-primary" id="btn-start">Open Workspace</button>
       </div>
     </header>
@@ -47,30 +47,30 @@
       <!-- Tab 1: Product -->
       <div class="tab-panel active" id="panel-product">
         <div class="action-buttons">
-          <button class="btn btn-hero btn-hero-primary" id="btn-open-folder">Open Local Folder</button>
-          <button class="btn btn-hero btn-hero-secondary" id="btn-new-project">Start Empty Project</button>
+          <button class="btn btn-hero btn-hero-primary" id="btn-open-folder"><span class="icon-inline" data-icon="folder"></span> Open Local Folder</button>
+          <button class="btn btn-hero btn-hero-secondary" id="btn-new-project"><span class="icon-inline" data-icon="plus"></span> Start Empty Project</button>
         </div>
 
         <div class="feature-grid">
           <div class="feature-card">
-            <div class="feature-icon">&#128194;</div>
+            <div class="feature-icon" data-icon="folder"></div>
             <h3>Link Your Folder</h3>
             <p>Connect any local project folder directly via File System Access API. Edit in your favorite editor, changes sync instantly.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">&#9998;&#65039;</div>
+            <div class="feature-icon" data-icon="edit"></div>
             <h3>Edit Freely</h3>
             <p>Built-in code editor with syntax highlighting, auto-completion, and Prettier formatting. Or keep using VS Code.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">&#128241;</div>
+            <div class="feature-icon" data-icon="phone"></div>
             <h3>Live Preview & Test</h3>
             <p>Instant iframe preview with responsive viewport switching. Scan QR code to test on your real phone, wirelessly.</p>
           </div>
         </div>
 
         <div class="drop-zone" id="drop-zone">
-          <div class="drop-zone-icon">&#128229;</div>
+          <div class="drop-zone-icon" data-icon="upload"></div>
           <h3>Drag & Drop Your Project Here</h3>
           <p>Drop a folder or HTML file to start instantly</p>
         </div>
@@ -86,17 +86,17 @@
                 <div class="arch-node-label">Input</div>
                 <div class="arch-node-value">Your Files</div>
               </div>
-              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-arrow" data-icon="arrowRight"></div>
               <div class="arch-node">
                 <div class="arch-node-label">Storage</div>
                 <div class="arch-node-value">VFS (IndexedDB)</div>
               </div>
-              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-arrow" data-icon="arrowRight"></div>
               <div class="arch-node">
                 <div class="arch-node-label">Gateway</div>
                 <div class="arch-node-value">Service Worker</div>
               </div>
-              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-arrow" data-icon="arrowRight"></div>
               <div class="arch-node">
                 <div class="arch-node-label">Output</div>
                 <div class="arch-node-value">Sandboxed Preview</div>
@@ -132,32 +132,32 @@
       <div class="tab-panel" id="panel-security">
         <div class="security-grid">
           <div class="security-card">
-            <div class="icon green">&#128737;&#65039;</div>
+            <div class="icon green" data-icon="shield"></div>
             <h3>100% Offline Capable</h3>
             <p>Everything runs in your browser. Your code never leaves your machine. No cloud, no uploads, no telemetry.</p>
           </div>
           <div class="security-card">
-            <div class="icon blue">&#128274;</div>
+            <div class="icon blue" data-icon="lock"></div>
             <h3>Iframe Sandbox Protection</h3>
             <p>Preview runs in a strictly sandboxed iframe. Scripts cannot escape to access the editor, cookies, or local storage.</p>
           </div>
           <div class="security-card">
-            <div class="icon yellow">&#9888;&#65039;</div>
+            <div class="icon yellow" data-icon="warning"></div>
             <h3>Same-Origin Isolation</h3>
             <p>Virtual domain isolation ensures preview code cannot read or modify the host application's data or database.</p>
           </div>
           <div class="security-card">
-            <div class="icon green">&#128187;</div>
+            <div class="icon green" data-icon="computer"></div>
             <h3>No Server Dependencies</h3>
             <p>Zero backend, zero dependencies. Safe for corporate environments with strict network policies.</p>
           </div>
           <div class="security-card">
-            <div class="icon blue">&#128221;</div>
+            <div class="icon blue" data-icon="clipboard"></div>
             <h3>No Sign-ups Required</h3>
             <p>No accounts, no registration, no data collection. Open the page and start working immediately.</p>
           </div>
           <div class="security-card">
-            <div class="icon yellow">&#128736;</div>
+            <div class="icon yellow" data-icon="wrench"></div>
             <h3>PWA Offline Support</h3>
             <p>Install as a Progressive Web App. Works offline after first load. Your dev tool is always available.</p>
           </div>
@@ -175,14 +175,22 @@
 
     <footer class="landing-footer">
       <p>Made with passion by developers, for developers. Runbits Web is free and open-source.</p>
-      <p style="margin-top:8px;"><a href="https://github.com/huchialun9-ctrl/runbit.git" target="_blank" style="color:var(--accent);font-size:12px;">View on GitHub &#8599;</a></p>
+      <p style="margin-top:8px;"><a href="https://github.com/huchialun9-ctrl/runbit.git" target="_blank" style="color:var(--accent);font-size:12px;display:inline-flex;align-items:center;gap:4px;"><span class="icon-inline" data-icon="github"></span> View on GitHub <span class="icon-inline" data-icon="externalLink"></span></a></p>
     </footer>
   </div>
 
   <div class="toast-container" id="toast-container"></div>
   <input type="file" id="file-input" webkitdirectory multiple style="display:none">
-  <input type="file" id="html-input" accept=".html,.htm" style="display:none">
 
+  <script src="js/icons.js"></script>
+  <script>
+    // Inject icons from data-icon attributes
+    document.querySelectorAll('[data-icon]').forEach(el => {
+      const name = el.getAttribute('data-icon');
+      const svg = RBIcons.icon(name, 18);
+      if (svg) el.innerHTML = svg;
+    });
+  </script>
   <script src="js/app.js"></script>
 </body>
 </html>
