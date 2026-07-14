@@ -1,12 +1,28 @@
 {
   "name": "runbits-web",
   "version": "1.0.0",
-  "description": "Instant local server & live previewer - zero command, zero server",
+  "description": "Instant local server & live previewer for web developers - zero command, zero server",
   "private": true,
+  "main": "server.js",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "watch": "node server.js --watch"
   },
-  "keywords": ["local-server", "live-preview", "web-development", "no-server"],
-  "license": "MIT"
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.16.0",
+    "qrcode": "^1.5.3",
+    "compression": "^1.7.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": ["local-server", "live-preview", "web-development", "no-server", "developer-tools"],
+  "author": "Runbits",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huchialun9-ctrl/runbit.git"
+  }
 }
