@@ -278,9 +278,9 @@ const hotReloadScript = `
 app.use(express.static(path.join(__dirname), {
   index: 'index.html',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
+    // No cache for development - always serve fresh files
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
   },
 }));
 
@@ -290,11 +290,11 @@ app.use((req, res, next) => {
     const filePath = path.join(__dirname, req.path === '/' ? 'index.html' : req.path);
     if (fs.existsSync(filePath)) {
       let content = fs.readFileSync(filePath, 'utf8');
-      if (!content.includes('ws://') && !content.includes('hot-reload-injected')) {
-        content = content.replace('</body>', hotReloadScript + '\n</body>');
-        res.setHeader('Content-Type', 'text/html');
-        return res.send(content);
-      }
+      // Always inject fresh hot-reload script
+      content = content.replace('</body>', hotReloadScript + '\n</body>');
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return res.send(content);
     }
   }
   next();
