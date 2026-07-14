@@ -279,3 +279,114 @@ code, pre {
 .hidden {
   display: none !important;
 }
+
+/* ── SVG Icons ── */
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  line-height: 0;
+}
+
+.icon-inline svg {
+  width: 1em;
+  height: 1em;
+}
+
+.feature-icon[data-icon] {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-bg);
+}
+
+.feature-icon[data-icon] svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+}
+
+.icon[data-icon] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon[data-icon] svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon.green svg { color: var(--success); }
+.icon.blue svg { color: var(--info); }
+.icon.yellow svg { color: var(--warning); }
+
+.arch-arrow[data-icon] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+
+.arch-arrow[data-icon] svg {
+  width: 24px;
+  height: 24px;
+}
+
+.file-tree-empty-icon[data-icon] svg {
+  width: 32px;
+  height: 32px;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.editor-empty-icon[data-icon] svg {
+  width: 40px;
+  height: 40px;
+  color: var(--text-tertiary);
+  opacity: 0.3;
+}
+
+.context-menu-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.viewport-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.devtool-btn .icon[data-icon] svg {
+  width: 20px;
+  height: 20px;
+}
+
+.devtool-textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  color: var(--text-primary);
+}
