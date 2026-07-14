@@ -1,0 +1,16 @@
+{
+  "name": "Runbits Web",
+  "short_name": "Runbits",
+  "description": "Instant local server & live previewer for web developers",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00d4aa",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%2300d4aa' rx='100' width='512' height='512'/><text x='256' y='350' font-size='260' text-anchor='middle' fill='%230a0a0a' font-weight='bold'>R</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
