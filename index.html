@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runbits Web - Instant Local Server & Live Previewer</title>
+  <meta name="description" content="Zero-command, zero-server local web previewer. Drag, drop, and run.">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' rx='20' width='100' height='100'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%230a0a0a' font-weight='bold'>R</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00d4aa">
+</head>
+<body>
+  <div class="landing">
+    <header class="landing-header">
+      <div class="logo">
+        <div class="logo-icon">R</div>
+        <span>Runbits Web</span>
+      </div>
+      <div class="header-actions">
+        <button class="header-link" id="btn-github">GitHub</button>
+        <button class="btn btn-primary" id="btn-start">Open Workspace</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Zero-Command Local Server</h1>
+      <p>Drag your web project into the browser. Instant local URL, live preview, hot-reload. No terminal, no npm, no setup.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Zero Command</span>
+        <span class="hero-tag">0% Server</span>
+        <span class="hero-tag">No Sign-ups</span>
+        <span class="hero-tag">100% Local</span>
+      </div>
+    </section>
+
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab active" data-tab="product">Product</button>
+        <button class="tab" data-tab="architecture">How It Works</button>
+        <button class="tab" data-tab="security">Privacy & Security</button>
+      </div>
+    </div>
+
+    <div class="tab-panels">
+      <!-- Tab 1: Product -->
+      <div class="tab-panel active" id="panel-product">
+        <div class="action-buttons">
+          <button class="btn btn-hero btn-hero-primary" id="btn-open-folder">Open Local Folder</button>
+          <button class="btn btn-hero btn-hero-secondary" id="btn-new-project">Start Empty Project</button>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">&#128194;</div>
+            <h3>Link Your Folder</h3>
+            <p>Connect any local project folder directly via File System Access API. Edit in your favorite editor, changes sync instantly.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#9998;&#65039;</div>
+            <h3>Edit Freely</h3>
+            <p>Built-in code editor with syntax highlighting, auto-completion, and Prettier formatting. Or keep using VS Code.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">&#128241;</div>
+            <h3>Live Preview & Test</h3>
+            <p>Instant iframe preview with responsive viewport switching. Scan QR code to test on your real phone, wirelessly.</p>
+          </div>
+        </div>
+
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-zone-icon">&#128229;</div>
+          <h3>Drag & Drop Your Project Here</h3>
+          <p>Drop a folder or HTML file to start instantly</p>
+        </div>
+      </div>
+
+      <!-- Tab 2: Architecture -->
+      <div class="tab-panel" id="panel-architecture">
+        <div class="arch-section">
+          <h3>How Runbits Web Works</h3>
+          <div class="arch-diagram">
+            <div class="arch-flow">
+              <div class="arch-node">
+                <div class="arch-node-label">Input</div>
+                <div class="arch-node-value">Your Files</div>
+              </div>
+              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-node">
+                <div class="arch-node-label">Storage</div>
+                <div class="arch-node-value">VFS (IndexedDB)</div>
+              </div>
+              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-node">
+                <div class="arch-node-label">Gateway</div>
+                <div class="arch-node-value">Service Worker</div>
+              </div>
+              <div class="arch-arrow">&#10132;</div>
+              <div class="arch-node">
+                <div class="arch-node-label">Output</div>
+                <div class="arch-node-value">Sandboxed Preview</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-section">
+          <h3>Core Technologies</h3>
+          <div class="tech-list">
+            <div class="tech-item">
+              <h4>Virtual File System</h4>
+              <p>Files stored in IndexedDB with full path mapping. Supports drag-drop import and real-time read/write operations.</p>
+            </div>
+            <div class="tech-item">
+              <h4>Service Worker Proxy</h4>
+              <p>Intercepts all preview iframe requests. Serves files from VFS with correct MIME types. No network calls needed.</p>
+            </div>
+            <div class="tech-item">
+              <h4>File System Access API</h4>
+              <p>Direct two-way sync with your physical disk. Edit in VS Code, see changes instantly in the browser preview.</p>
+            </div>
+            <div class="tech-item">
+              <h4>ES Modules Native</h4>
+              <p>Import Maps + Service Worker enables native ES Module execution without bundlers. Modern JS just works.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Security -->
+      <div class="tab-panel" id="panel-security">
+        <div class="security-grid">
+          <div class="security-card">
+            <div class="icon green">&#128737;&#65039;</div>
+            <h3>100% Offline Capable</h3>
+            <p>Everything runs in your browser. Your code never leaves your machine. No cloud, no uploads, no telemetry.</p>
+          </div>
+          <div class="security-card">
+            <div class="icon blue">&#128274;</div>
+            <h3>Iframe Sandbox Protection</h3>
+            <p>Preview runs in a strictly sandboxed iframe. Scripts cannot escape to access the editor, cookies, or local storage.</p>
+          </div>
+          <div class="security-card">
+            <div class="icon yellow">&#9888;&#65039;</div>
+            <h3>Same-Origin Isolation</h3>
+            <p>Virtual domain isolation ensures preview code cannot read or modify the host application's data or database.</p>
+          </div>
+          <div class="security-card">
+            <div class="icon green">&#128187;</div>
+            <h3>No Server Dependencies</h3>
+            <p>Zero backend, zero dependencies. Safe for corporate environments with strict network policies.</p>
+          </div>
+          <div class="security-card">
+            <div class="icon blue">&#128221;</div>
+            <h3>No Sign-ups Required</h3>
+            <p>No accounts, no registration, no data collection. Open the page and start working immediately.</p>
+          </div>
+          <div class="security-card">
+            <div class="icon yellow">&#128736;</div>
+            <h3>PWA Offline Support</h3>
+            <p>Install as a Progressive Web App. Works offline after first load. Your dev tool is always available.</p>
+          </div>
+        </div>
+
+        <div class="badge-list">
+          <span class="badge">Zero Telemetry</span>
+          <span class="badge">No Cloud Upload</span>
+          <span class="badge">Sandboxed Execution</span>
+          <span class="badge">CSP Compliant</span>
+          <span class="badge">Open Source</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="landing-footer">
+      <p>Made with passion by developers, for developers. Runbits Web is free and open-source.</p>
+    </footer>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <input type="file" id="file-input" webkitdirectory multiple style="display:none">
+  <input type="file" id="html-input" accept=".html,.htm" style="display:none">
+
+  <script src="js/app.js"></script>
+</body>
+</html>
