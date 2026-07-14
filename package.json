@@ -1,0 +1,12 @@
+{
+  "name": "runbits-web",
+  "version": "1.0.0",
+  "description": "Instant local server & live previewer - zero command, zero server",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": ["local-server", "live-preview", "web-development", "no-server"],
+  "license": "MIT"
+}
