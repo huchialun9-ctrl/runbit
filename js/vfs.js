@@ -34,26 +34,27 @@ window.RunbitsVFS = (() => {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
 
+  const MIME_MAP = {
+    html: 'text/html', htm: 'text/html', css: 'text/css',
+    js: 'application/javascript', mjs: 'application/javascript',
+    json: 'application/json', xml: 'application/xml',
+    svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg',
+    jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
+    ico: 'image/x-icon', bmp: 'image/bmp',
+    woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf',
+    otf: 'font/otf', eot: 'application/vnd.ms-fontobject',
+    mp4: 'video/mp4', webm: 'video/webm', ogg: 'audio/ogg',
+    mp3: 'audio/mpeg', wav: 'audio/wav',
+    pdf: 'application/pdf', zip: 'application/zip',
+    wasm: 'application/wasm', txt: 'text/plain',
+    md: 'text/markdown', csv: 'text/csv',
+    ts: 'text/typescript', tsx: 'text/typescript',
+    jsx: 'application/javascript', py: 'text/x-python',
+  };
+
   function getMime(filename) {
     const ext = filename.split('.').pop().toLowerCase();
-    const map = {
-      html: 'text/html', htm: 'text/html', css: 'text/css',
-      js: 'application/javascript', mjs: 'application/javascript',
-      json: 'application/json', xml: 'application/xml',
-      svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg',
-      jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
-      ico: 'image/x-icon', bmp: 'image/bmp',
-      woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf',
-      otf: 'font/otf', eot: 'application/vnd.ms-fontobject',
-      mp4: 'video/mp4', webm: 'video/webm', ogg: 'audio/ogg',
-      mp3: 'audio/mpeg', wav: 'audio/wav',
-      pdf: 'application/pdf', zip: 'application/zip',
-      wasm: 'application/wasm', txt: 'text/plain',
-      md: 'text/markdown', csv: 'text/csv',
-      ts: 'application/typescript', tsx: 'application/typescript',
-      jsx: 'application/javascript', py: 'text/x-python',
-    };
-    return map[ext] || 'application/octet-stream';
+    return MIME_MAP[ext] || 'application/octet-stream';
   }
 
   // ── Project CRUD ──
@@ -61,14 +62,13 @@ window.RunbitsVFS = (() => {
     const db = await open();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(PROJECTS_STORE, 'readwrite');
-      const store = tx.objectStore(PROJECTS_STORE);
       const project = {
         id: genId(),
         name: name || 'Untitled Project',
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
-      const req = store.add(project);
+      const req = tx.objectStore(PROJECTS_STORE).add(project);
       req.onsuccess = () => resolve(project);
       req.onerror = (e) => reject(e.target.error);
     });
@@ -77,8 +77,7 @@ window.RunbitsVFS = (() => {
   async function getProject(id) {
     const db = await open();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(PROJECTS_STORE, 'readonly');
-      const req = tx.objectStore(PROJECTS_STORE).get(id);
+      const req = db.transaction(PROJECTS_STORE, 'readonly').objectStore(PROJECTS_STORE).get(id);
       req.onsuccess = () => resolve(req.result);
       req.onerror = (e) => reject(e.target.error);
     });
@@ -87,8 +86,7 @@ window.RunbitsVFS = (() => {
   async function getAllProjects() {
     const db = await open();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(PROJECTS_STORE, 'readonly');
-      const req = tx.objectStore(PROJECTS_STORE).getAll();
+      const req = db.transaction(PROJECTS_STORE, 'readonly').objectStore(PROJECTS_STORE).getAll();
       req.onsuccess = () => resolve(req.result || []);
       req.onerror = (e) => reject(e.target.error);
     });
@@ -96,18 +94,17 @@ window.RunbitsVFS = (() => {
 
   async function deleteProject(id) {
     const db = await open();
-    return new Promise(async (resolve, reject) => {
-      const tx = db.transaction([PROJECTS_STORE, FILES_STORE], 'readwrite');
-      tx.objectStore(PROJECTS_STORE).delete(id);
-      const filesIndex = tx.objectStore(FILES_STORE).index('projectId');
-      const req = filesIndex.openCursor(IDBKeyRange.only(id));
-      req.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) {
-          cursor.delete();
-          cursor.continue();
-        }
-      };
+    const tx = db.transaction([PROJECTS_STORE, FILES_STORE], 'readwrite');
+    tx.objectStore(PROJECTS_STORE).delete(id);
+
+    const filesIndex = tx.objectStore(FILES_STORE).index('projectId');
+    const req = filesIndex.openCursor(IDBKeyRange.only(id));
+    req.onsuccess = (e) => {
+      const cursor = e.target.result;
+      if (cursor) { cursor.delete(); cursor.continue(); }
+    };
+
+    return new Promise((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = (e) => reject(e.target.error);
     });
@@ -118,8 +115,6 @@ window.RunbitsVFS = (() => {
     const db = await open();
     const name = path.split('/').pop();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(FILES_STORE, 'readwrite');
-      const store = tx.objectStore(FILES_STORE);
       const file = {
         id: genId(),
         projectId,
@@ -130,7 +125,7 @@ window.RunbitsVFS = (() => {
         size: typeof content === 'string' ? new Blob([content]).size : 0,
         updatedAt: Date.now(),
       };
-      const req = store.add(file);
+      const req = db.transaction(FILES_STORE, 'readwrite').objectStore(FILES_STORE).add(file);
       req.onsuccess = () => resolve(file);
       req.onerror = (e) => reject(e.target.error);
     });
@@ -160,8 +155,7 @@ window.RunbitsVFS = (() => {
     const db = await open();
     const normalizedPath = '/' + path.replace(/^\//, '');
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(FILES_STORE, 'readonly');
-      const index = tx.objectStore(FILES_STORE).index('projectPath');
+      const index = db.transaction(FILES_STORE, 'readonly').objectStore(FILES_STORE).index('projectPath');
       const req = index.get([projectId, normalizedPath]);
       req.onsuccess = () => resolve(req.result);
       req.onerror = (e) => reject(e.target.error);
@@ -171,8 +165,7 @@ window.RunbitsVFS = (() => {
   async function getFileById(fileId) {
     const db = await open();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(FILES_STORE, 'readonly');
-      const req = tx.objectStore(FILES_STORE).get(fileId);
+      const req = db.transaction(FILES_STORE, 'readonly').objectStore(FILES_STORE).get(fileId);
       req.onsuccess = () => resolve(req.result);
       req.onerror = (e) => reject(e.target.error);
     });
@@ -181,8 +174,7 @@ window.RunbitsVFS = (() => {
   async function getAllFiles(projectId) {
     const db = await open();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(FILES_STORE, 'readonly');
-      const index = tx.objectStore(FILES_STORE).index('projectId');
+      const index = db.transaction(FILES_STORE, 'readonly').objectStore(FILES_STORE).index('projectId');
       const req = index.getAll(projectId);
       req.onsuccess = () => resolve(req.result || []);
       req.onerror = (e) => reject(e.target.error);
@@ -192,8 +184,7 @@ window.RunbitsVFS = (() => {
   async function deleteFile(fileId) {
     const db = await open();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(FILES_STORE, 'readwrite');
-      const req = tx.objectStore(FILES_STORE).delete(fileId);
+      const req = db.transaction(FILES_STORE, 'readwrite').objectStore(FILES_STORE).delete(fileId);
       req.onsuccess = () => resolve();
       req.onerror = (e) => reject(e.target.error);
     });
@@ -220,24 +211,47 @@ window.RunbitsVFS = (() => {
     });
   }
 
-  // ── Import from File objects ──
+  // ── Batch Import (single transaction) ──
   async function importFiles(projectId, fileObjects) {
+    const db = await open();
     const results = [];
-    for (const file of fileObjects) {
-      const path = file._relativePath || file.webkitRelativePath || file.name;
-      const content = await readFileAsText(file);
-      const f = await addFile(projectId, path, content, getMime(path));
-      results.push(f);
-    }
-    return results;
-  }
 
-  function readFileAsText(file) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsText(file);
+      const tx = db.transaction(FILES_STORE, 'readwrite');
+      const store = tx.objectStore(FILES_STORE);
+
+      let pending = fileObjects.length;
+      if (pending === 0) return resolve([]);
+
+      for (const file of fileObjects) {
+        const path = file._relativePath || file.webkitRelativePath || file.name;
+        const name = path.split('/').pop();
+        const content = file._content || '';
+
+        const fileRecord = {
+          id: genId(),
+          projectId,
+          path: '/' + path.replace(/^\//, ''),
+          name,
+          content,
+          mimeType: file.type || getMime(name),
+          size: file.size || new Blob([content]).size,
+          updatedAt: Date.now(),
+        };
+
+        const req = store.add(fileRecord);
+        req.onsuccess = () => {
+          results.push(fileRecord);
+          pending--;
+          if (pending === 0) resolve(results);
+        };
+        req.onerror = (e) => {
+          pending--;
+          if (pending === 0) resolve(results);
+        };
+      }
+
+      tx.onerror = (e) => reject(e.target.error);
     });
   }
 
@@ -271,7 +285,6 @@ window.RunbitsVFS = (() => {
     return root;
   }
 
-  // ── Get entry by path ──
   function getEntry(tree, path) {
     const parts = path.split('/').filter(Boolean);
     let current = tree;
@@ -282,7 +295,6 @@ window.RunbitsVFS = (() => {
     return current;
   }
 
-  // ── Clear all data ──
   async function clearAll() {
     const db = await open();
     return new Promise((resolve, reject) => {
@@ -295,22 +307,8 @@ window.RunbitsVFS = (() => {
   }
 
   return {
-    open,
-    createProject,
-    getProject,
-    getAllProjects,
-    deleteProject,
-    addFile,
-    updateFile,
-    getFile,
-    getFileById,
-    getAllFiles,
-    deleteFile,
-    renameFile,
-    importFiles,
-    buildTree,
-    getEntry,
-    clearAll,
-    getMime,
+    open, createProject, getProject, getAllProjects, deleteProject,
+    addFile, updateFile, getFile, getFileById, getAllFiles, deleteFile, renameFile,
+    importFiles, buildTree, getEntry, clearAll, getMime,
   };
 })();
