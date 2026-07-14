@@ -179,9 +179,10 @@
 }
 
 .file-tree-empty-icon {
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 8px;
-  opacity: 0.5;
 }
 
 .tree-item {
@@ -376,8 +377,9 @@
 }
 
 .editor-empty-icon {
-  font-size: 36px;
-  opacity: 0.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .editor-empty p {
