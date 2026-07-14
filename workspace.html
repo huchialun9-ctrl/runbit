@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runbits Web - Workspace</title>
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/workspace.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4aa' rx='20' width='100' height='100'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%230a0a0a' font-weight='bold'>R</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00d4aa">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.css">
+</head>
+<body>
+  <div class="workspace">
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo" id="btn-home">
+          <div class="topbar-logo-icon">R</div>
+          <span>Runbits</span>
+        </div>
+        <span class="topbar-project" id="project-name">No Project</span>
+      </div>
+      <div class="topbar-center">
+        <button class="btn btn-ghost btn-icon" id="btn-run" title="Run (Ctrl+Enter)">&#9654;</button>
+        <button class="btn btn-ghost btn-icon" id="btn-format" title="Format (Shift+Alt+F)">&#9776;</button>
+        <button class="btn btn-ghost btn-icon" id="btn-save" title="Save (Ctrl+S)">&#128190;</button>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost" id="btn-open-folder" title="Open Local Folder">&#128194; Folder</button>
+        <button class="btn btn-ghost" id="btn-qr" title="Mobile Preview QR Code">&#128241; QR</button>
+        <button class="btn btn-ghost" id="btn-new-file" title="New File">&#10010; File</button>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Left Panel -->
+      <div class="left-panel" id="left-panel">
+        <div class="left-panel-tabs">
+          <button class="left-panel-tab active" data-view="files">Files</button>
+          <button class="left-panel-tab" data-view="toolbox">Tools</button>
+        </div>
+        <div class="left-panel-content">
+          <!-- File Browser -->
+          <div class="left-panel-view active" id="view-files">
+            <div class="file-browser-header">
+              <span>Explorer</span>
+              <div class="file-browser-actions">
+                <button class="btn btn-icon btn-ghost" id="btn-new-file-side" title="New File">&#10010;</button>
+                <button class="btn btn-icon btn-ghost" id="btn-new-folder" title="New Folder">&#128193;</button>
+              </div>
+            </div>
+            <div class="file-tree" id="file-tree">
+              <div class="file-tree-empty" id="file-tree-empty">
+                <div class="file-tree-empty-icon">&#128194;</div>
+                <p>No files yet</p>
+                <p style="margin-top:4px;font-size:11px;">Drop files or open a folder</p>
+              </div>
+            </div>
+            <div class="file-browser-drop" id="file-drop-zone">
+              Drop files here
+            </div>
+          </div>
+
+          <!-- Dev Toolbox -->
+          <div class="left-panel-view" id="view-toolbox">
+            <div class="devtools-grid">
+              <button class="devtool-btn" data-tool="json">
+                <span class="icon">{ }</span>
+                JSON Format
+              </button>
+              <button class="devtool-btn" data-tool="base64-enc">
+                <span class="icon">&#128273;</span>
+                Base64 Encode
+              </button>
+              <button class="devtool-btn" data-tool="base64-dec">
+                <span class="icon">&#128274;</span>
+                Base64 Decode
+              </button>
+              <button class="devtool-btn" data-tool="url-enc">
+                <span class="icon">&#128279;</span>
+                URL Encode
+              </button>
+              <button class="devtool-btn" data-tool="url-dec">
+                <span class="icon">&#128279;</span>
+                URL Decode
+              </button>
+              <button class="devtool-btn" data-tool="jwt">
+                <span class="icon">&#128273;</span>
+                JWT Parse
+              </button>
+              <button class="devtool-btn" data-tool="timestamp">
+                <span class="icon">&#128336;</span>
+                Timestamp
+              </button>
+              <button class="devtool-btn" data-tool="hash">
+                <span class="icon">#</span>
+                Hash Text
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resize Handle (Left) -->
+      <div class="resize-handle-v" id="resize-left"></div>
+
+      <!-- Center Panel: Editor -->
+      <div class="center-panel" id="center-panel">
+        <div class="editor-tabs" id="editor-tabs"></div>
+        <div class="editor-container" id="editor-container">
+          <div class="editor-empty" id="editor-empty">
+            <div class="editor-empty-icon">&#128196;</div>
+            <p>Open a file to start editing</p>
+            <p style="font-size:11px;color:var(--text-tertiary);">or drop files / open a folder</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resize Handle (Right) -->
+      <div class="resize-handle-v" id="resize-right"></div>
+
+      <!-- Right Panel -->
+      <div class="right-panel" id="right-panel">
+        <!-- Preview -->
+        <div class="preview-panel" id="preview-panel">
+          <div class="preview-header">
+            <div class="preview-header-left">
+              <span style="font-size:12px;font-weight:600;color:var(--text-secondary);">Preview</span>
+              <span class="preview-url" id="preview-url">about:blank</span>
+            </div>
+            <div class="preview-header-right">
+              <button class="viewport-btn active" data-viewport="desktop" title="Desktop">&#128187;</button>
+              <button class="viewport-btn" data-viewport="tablet" title="Tablet">&#128218;</button>
+              <button class="viewport-btn" data-viewport="mobile" title="Mobile">&#128241;</button>
+              <button class="btn btn-icon btn-ghost" id="btn-refresh-preview" title="Refresh">&#8635;</button>
+            </div>
+          </div>
+          <div class="preview-frame-wrapper desktop" id="preview-wrapper">
+            <div class="preview-loading" id="preview-loading">
+              <span>Drop files or open a folder to preview</span>
+            </div>
+            <iframe id="preview-iframe"
+              sandbox="allow-scripts allow-modals allow-popups allow-same-origin"
+              src="about:blank"></iframe>
+          </div>
+        </div>
+
+        <!-- Resize Handle -->
+        <div class="resize-handle" id="resize-console"></div>
+
+        <!-- Debug Console -->
+        <div class="console-panel" id="console-panel">
+          <div class="console-header">
+            <div class="console-tabs">
+              <button class="console-tab active" data-ctab="console">Console<span class="console-count" id="console-count">0</span></button>
+              <button class="console-tab" data-ctab="network">Network<span class="console-count" id="network-count">0</span></button>
+            </div>
+            <div class="console-actions">
+              <button class="btn btn-icon btn-ghost" id="btn-clear-console" title="Clear">&#128465;</button>
+            </div>
+          </div>
+          <div class="console-body">
+            <div class="console-view active" id="console-view-console"></div>
+            <div class="console-view" id="console-view-network"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="context-menu" id="context-menu">
+    <div class="context-menu-item" data-action="new-file">&#10010; New File</div>
+    <div class="context-menu-item" data-action="new-folder">&#128193; New Folder</div>
+    <div class="context-menu-sep"></div>
+    <div class="context-menu-item" data-action="rename">&#9998; Rename</div>
+    <div class="context-menu-item" data-action="delete" class="danger">&#128465; Delete</div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- QR Modal -->
+  <div class="modal-overlay" id="qr-modal">
+    <div class="modal qr-modal">
+      <h3>Scan to Preview on Mobile</h3>
+      <canvas class="qr-canvas" id="qr-canvas" width="200" height="200"></canvas>
+      <div class="qr-url" id="qr-url"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="btn-close-qr">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dev Tool Modal -->
+  <div class="modal-overlay" id="devtool-modal">
+    <div class="modal">
+      <h3 id="devtool-title">Tool</h3>
+      <textarea id="devtool-input" rows="5" placeholder="Input..." style="width:100%;resize:vertical;font-family:var(--font-mono);font-size:12px;background:var(--bg-tertiary);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:10px;color:var(--text-primary);"></textarea>
+      <div style="text-align:center;margin:12px 0;">
+        <button class="btn btn-primary" id="devtool-action">Process</button>
+      </div>
+      <textarea id="devtool-output" rows="5" readonly placeholder="Output..." style="width:100%;resize:vertical;font-family:var(--font-mono);font-size:12px;background:var(--bg-tertiary);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:10px;color:var(--text-primary);"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btn-copy-devtool">Copy Output</button>
+        <button class="btn btn-secondary" id="btn-close-devtool">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="folder-input" webkitdirectory multiple style="display:none">
+  <input type="file" id="file-input-single" style="display:none">
+
+  <!-- CodeMirror 5 -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/css/css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/markdown/markdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/edit/closetag.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldgutter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/brace-fold.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/xml-fold.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/selection/active-line.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/comment/comment.min.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/vfs.js"></script>
+  <script src="js/workspace.js"></script>
+</body>
+</html>
